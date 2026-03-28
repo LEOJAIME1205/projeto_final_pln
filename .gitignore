@@ -4,3 +4,9 @@ __pycache__/
 .env
 .venv/
 venv/
+
+# Checkpoints intermediários do treinamento (podem ser regenerados)
+utils/train_model/zapguard_checkpoints/
+
+# Pesos do modelo final (arquivo grande ~438MB, usar Git LFS ou hospedar separado)
+utils/train_model/zapguard_model_final/
