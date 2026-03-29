@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends
+import asyncio
+from fastapi import APIRouter, Depends, HTTPException
 from api.v1.schemas.analyze_schema import AnalyzeRequest, AnalyzeResponse
 from api.v1.controllers.analyze_controller import AnalyzeController
 from api.v1.services.analyze_service import AnalyzeService
+
+ROUTE_TIMEOUT_SECONDS = 6
 
 router = APIRouter(prefix="/api/v1", tags=["Analysis"])
 
@@ -28,4 +31,13 @@ async def analyze_message(
     Rota enxuta: NENHUMA lógica aqui. 
     Apenas define o Endpoint, injeta as dependências e repassa ao Controller.
     """
-    return await controller.process_analysis(request)
+    try:
+        return await asyncio.wait_for(
+            controller.process_analysis(request),
+            timeout=ROUTE_TIMEOUT_SECONDS
+        )
+    except asyncio.TimeoutError:
+        raise HTTPException(
+            status_code=504,
+            detail=f"O modelo demorou mais de {ROUTE_TIMEOUT_SECONDS}s para responder. Tente novamente."
+        )

@@ -1,4 +1,3 @@
-import './App.css'
 import { AnalyzePage } from './pages/AnalyzePage'
 
 function App() {
